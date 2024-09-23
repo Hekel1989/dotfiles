@@ -32,7 +32,7 @@ mkdir -p ~/.config/synth-shell
 
 # Copy the contents of the dotfiles/synth-shell directory to .config/synth-shell
 echo "Installing dotfiles..."
-cp -R dotfiles/synth-shell/* ~/.config/synth-shell/
+cp -R dotfiles/assets/synth-shell/* ~/.config/synth-shell/
 
 # Clean up
 echo "Cleaning up..."
