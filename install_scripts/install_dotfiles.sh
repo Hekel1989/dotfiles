@@ -2,7 +2,7 @@
 
 # Color codes
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
+YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
@@ -46,6 +46,7 @@ if ! synth_shell_installed; then
             exit 1
         fi
         cd ..
+        rm -rf synth-shell
     else
         print_status "error" "Failed to clone synth-shell repository. Exiting."
         exit 1
@@ -57,17 +58,14 @@ fi
 # Create the destination directory if it doesn't exist
 mkdir -p ~/.config/synth-shell
 
-# Get the directory where the script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 # Copy the contents of the assets/synth-shell directory to ~/.config/synth-shell
-print_status "warning" "Installing dotfiles..."
-ASSETS_DIR="${SCRIPT_DIR}/assets/synth-shell"
-if [ -d "$ASSETS_DIR" ]; then
-    if cp -R "$ASSETS_DIR"/* ~/.config/synth-shell/; then
-        print_status "success" "Dotfiles installed successfully."
+print_status "warning" "Installing synth-shell configuration..."
+SYNTH_SHELL_SOURCE="$(pwd)/assets/synth-shell"
+if [ -d "$SYNTH_SHELL_SOURCE" ]; then
+    if cp -R "$SYNTH_SHELL_SOURCE"/* ~/.config/synth-shell/; then
+        print_status "success" "synth-shell configuration installed successfully."
     else
-        print_status "error" "Failed to install dotfiles. Exiting."
+        print_status "error" "Failed to install synth-shell configuration. Exiting."
         exit 1
     fi
 else
@@ -75,4 +73,4 @@ else
     exit 1
 fi
 
-print_status "success" "Installation complete!"
+print_status "success" "synth-shell installation and configuration complete!"
