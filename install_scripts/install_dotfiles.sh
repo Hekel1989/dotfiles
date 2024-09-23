@@ -9,6 +9,15 @@ synth_shell_installed() {
     fi
 }
 
+# Function to clean up
+cleanup() {
+    echo "Cleaning up..."
+    rm -rf dotfiles
+}
+
+# Set up trap to ensure cleanup happens even if the script exits unexpectedly
+trap cleanup EXIT
+
 # Check if synth-shell is installed
 if ! synth_shell_installed; then
     echo "synth-shell is not installed. Installing now..."
@@ -38,8 +47,6 @@ mkdir -p ~/.config/synth-shell
 echo "Installing dotfiles..."
 cp -R dotfiles/synth-shell/* ~/.config/synth-shell/
 
-# Clean up
-echo "Cleaning up..."
-rm -rf dotfiles
-
 echo "Installation complete!"
+
+# Note: Cleanup will be called automatically due to the trap
