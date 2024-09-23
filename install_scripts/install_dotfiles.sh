@@ -54,22 +54,20 @@ else
     print_status "warning" "synth-shell is already installed."
 fi
 
-# Clone the dotfiles repository
-print_status "warning" "Cloning dotfiles repository..."
-if ! git clone https://github.com/Hekel1989/dotfiles.git; then
-    print_status "error" "Failed to clone dotfiles repository. Exiting."
-    exit 1
-fi
-
 # Create the destination directory if it doesn't exist
 mkdir -p ~/.config/synth-shell
 
-# Copy the contents of the dotfiles/synth-shell directory to .config/synth-shell
+# Copy the contents of the /assets/synth-shell directory to ~/.config/synth-shell
 print_status "warning" "Installing dotfiles..."
-if cp -R dotfiles/synth-shell/* ~/.config/synth-shell/; then
-    print_status "success" "Dotfiles installed successfully."
+if [ -d "/assets/synth-shell" ]; then
+    if cp -R /assets/synth-shell/* ~/.config/synth-shell/; then
+        print_status "success" "Dotfiles installed successfully."
+    else
+        print_status "error" "Failed to install dotfiles. Exiting."
+        exit 1
+    fi
 else
-    print_status "error" "Failed to install dotfiles. Exiting."
+    print_status "error" "/assets/synth-shell directory not found. Exiting."
     exit 1
 fi
 
