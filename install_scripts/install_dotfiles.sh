@@ -57,17 +57,21 @@ fi
 # Create the destination directory if it doesn't exist
 mkdir -p ~/.config/synth-shell
 
-# Copy the contents of the /assets/synth-shell directory to ~/.config/synth-shell
+# Get the directory where the script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Copy the contents of the assets/synth-shell directory to ~/.config/synth-shell
 print_status "warning" "Installing dotfiles..."
-if [ -d "/assets/synth-shell" ]; then
-    if cp -R /assets/synth-shell/* ~/.config/synth-shell/; then
+ASSETS_DIR="${SCRIPT_DIR}/assets/synth-shell"
+if [ -d "$ASSETS_DIR" ]; then
+    if cp -R "$ASSETS_DIR"/* ~/.config/synth-shell/; then
         print_status "success" "Dotfiles installed successfully."
     else
         print_status "error" "Failed to install dotfiles. Exiting."
         exit 1
     fi
 else
-    print_status "error" "/assets/synth-shell directory not found. Exiting."
+    print_status "error" "assets/synth-shell directory not found. Exiting."
     exit 1
 fi
 
