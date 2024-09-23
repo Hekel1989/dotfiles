@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Color codes
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 # Function to check if synth-shell is installed
 synth_shell_installed() {
     if [ -d "$HOME/.config/synth-shell" ]; then
@@ -9,44 +15,62 @@ synth_shell_installed() {
     fi
 }
 
-# Function to clean up
-cleanup() {
-    echo "Cleaning up..."
-    rm -rf dotfiles
+# Function to print colored output
+print_status() {
+    case $1 in
+        "success") echo -e "${GREEN}$2${NC}" ;;
+        "warning") echo -e "${YELLOW}$2${NC}" ;;
+        "error") echo -e "${RED}$2${NC}" ;;
+        *) echo "$2" ;;
+    esac
 }
-
-# Set up trap to ensure cleanup happens even if the script exits unexpectedly
-trap cleanup EXIT
 
 # Check if synth-shell is installed
 if ! synth_shell_installed; then
-    echo "synth-shell is not installed. Installing now..."
+    print_status "warning" "synth-shell is not installed. Installing now..."
 
     # Install dependencies
     sudo pacman -Syu --noconfirm
-    sudo pacman -S --noconfirm git base-devel
+    if ! sudo pacman -S --noconfirm git base-devel; then
+        print_status "error" "Failed to install dependencies. Exiting."
+        exit 1
+    fi
 
     # Clone and install synth-shell
-    git clone --recursive https://github.com/andresgongora/synth-shell.git
-    cd synth-shell
-    ./setup.sh
-    cd ..
-    rm -rf synth-shell
+    if git clone --recursive https://github.com/andresgongora/synth-shell.git; then
+        cd synth-shell
+        if ./setup.sh; then
+            print_status "success" "synth-shell installed successfully."
+        else
+            print_status "error" "Failed to install synth-shell. Exiting."
+            exit 1
+        fi
+        cd ..
+    else
+        print_status "error" "Failed to clone synth-shell repository. Exiting."
+        exit 1
+    fi
 else
-    echo "synth-shell is already installed."
+    print_status "warning" "synth-shell is already installed."
 fi
 
 # Clone the dotfiles repository
-echo "Cloning dotfiles repository..."
-git clone https://github.com/Hekel1989/dotfiles.git
+print_status "warning" "Cloning dotfiles repository..."
+if ! git clone https://github.com/Hekel1989/dotfiles.git; then
+    print_status "error" "Failed to clone dotfiles repository. Exiting."
+    exit 1
+fi
 
 # Create the destination directory if it doesn't exist
 mkdir -p ~/.config/synth-shell
 
 # Copy the contents of the dotfiles/synth-shell directory to .config/synth-shell
-echo "Installing dotfiles..."
-cp -R dotfiles/synth-shell/* ~/.config/synth-shell/
+print_status "warning" "Installing dotfiles..."
+if cp -R dotfiles/synth-shell/* ~/.config/synth-shell/; then
+    print_status "success" "Dotfiles installed successfully."
+else
+    print_status "error" "Failed to install dotfiles. Exiting."
+    exit 1
+fi
 
-echo "Installation complete!"
-
-# Note: Cleanup will be called automatically due to the trap
+print_status "success" "Installation complete!"
