@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
+# Function to check if synth-shell is installed
+synth_shell_installed() {
+    if [ -d "$HOME/.config/synth-shell" ] && [ -f "$HOME/.config/synth-shell/synth-shell-prompt.config" ]; then
+        return 0  # true, synth-shell is installed
+    else
+        return 1  # false, synth-shell is not installed
+    fi
 }
 
 # Check if synth-shell is installed
-if ! command_exists synth-shell-prompt; then
+if ! synth_shell_installed; then
     echo "synth-shell is not installed. Installing now..."
 
     # Install dependencies
@@ -32,7 +36,7 @@ mkdir -p ~/.config/synth-shell
 
 # Copy the contents of the dotfiles/synth-shell directory to .config/synth-shell
 echo "Installing dotfiles..."
-cp -R dotfiles/assets/synth-shell/* ~/.config/synth-shell/
+cp -R dotfiles/synth-shell/* ~/.config/synth-shell/
 
 # Clean up
 echo "Cleaning up..."
