@@ -2,7 +2,7 @@
 
 # Function to check if synth-shell is installed
 synth_shell_installed() {
-    if [ -d "$HOME/.config/synth-shell" ] && [ -f "$HOME/.config/synth-shell/synth-shell-prompt.config" ]; then
+    if [ -d "$HOME/.config/synth-shell" ]; then
         return 0  # true, synth-shell is installed
     else
         return 1  # false, synth-shell is not installed
